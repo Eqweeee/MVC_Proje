@@ -1,0 +1,25 @@
+﻿@model MVC_Proje.Models.Book
+
+<h2>Yeni Kitap Ekle</h2>
+
+<form asp-action="Add" method="post">
+    <div class="form-group">
+        <label>Kitap Adı</label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Yazar</label>
+        <input asp-for="Author" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Fiyat</label>
+        <input asp-for="Price" type="number" step="0.01" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Stok Adedi</label>
+        <input asp-for="Stock" type="number" class="form-control" />
+    </div>
+    <br />
+    <button type="submit" class="btn btn-success">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary">İptal</a>
+</form>
