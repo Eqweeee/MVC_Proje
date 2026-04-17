@@ -21,11 +21,17 @@ namespace MVC_Proje.Controllers
         public IActionResult Add() => View();
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Add(Book newBook)
         {
-            _context.Books.Add(newBook);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                _context.Books.Add(newBook);
+                _context.SaveChanges();
+                TempData["Message"] = "Kitap başarıyla eklendi.";
+                return RedirectToAction("Index");
+            }
+            return View(newBook);
         }
 
         [HttpGet]
@@ -36,20 +42,31 @@ namespace MVC_Proje.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Update(Book updatedBook)
         {
-            _context.Books.Update(updatedBook);
-            _context.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                _context.Books.Update(updatedBook);
+                _context.SaveChanges();
+                TempData["Message"] = "Kitap başarıyla güncellendi.";
+                return RedirectToAction("Index");
+            }
+            return View(updatedBook);
         }
+
         public IActionResult Remove(int id)
         {
             var book = _context.Books.Find(id);
+
             if (book != null)
             {
                 _context.Books.Remove(book);
                 _context.SaveChanges();
+
+                TempData["Message"] = "Kitap başarıyla silindi.";
             }
+
             return RedirectToAction("Index");
         }
     }
