@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MVC_Proje.Models;
 
 namespace MVC_Proje.Controllers
@@ -13,12 +14,16 @@ namespace MVC_Proje.Controllers
         }
         public IActionResult Index()
         {
-            var books = _context.Books.ToList();
+            var books = _context.Books.Include(b => b.Category).ToList();
             return View(books);
         }
 
         [HttpGet]
-        public IActionResult Add() => View();
+        public IActionResult Add()
+        {
+            ViewBag.Categories = _context.Categories.ToList();
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -31,6 +36,7 @@ namespace MVC_Proje.Controllers
                 TempData["Message"] = "Kitap başarıyla eklendi.";
                 return RedirectToAction("Index");
             }
+            ViewBag.Categories = _context.Categories.ToList();
             return View(newBook);
         }
 
@@ -38,6 +44,7 @@ namespace MVC_Proje.Controllers
         public IActionResult Update(int id)
         {
             var book = _context.Books.Find(id);
+            ViewBag.Categories = _context.Categories.ToList();
             return View(book);
         }
 
@@ -52,6 +59,7 @@ namespace MVC_Proje.Controllers
                 TempData["Message"] = "Kitap başarıyla güncellendi.";
                 return RedirectToAction("Index");
             }
+            ViewBag.Categories = _context.Categories.ToList();
             return View(updatedBook);
         }
 

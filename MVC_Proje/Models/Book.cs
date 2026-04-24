@@ -18,5 +18,9 @@ namespace MVC_Proje.Models
 
         [Range(0, int.MaxValue, ErrorMessage = "Stock alanı 0 veya daha büyük olmalıdır")]
         public int Stock { get; set; }
+
+        public int CategoryId { get; set; }
+        
+        public Category? Category { get; set; }
     }
 }
