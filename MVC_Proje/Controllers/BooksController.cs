@@ -12,10 +12,35 @@ namespace MVC_Proje.Controllers
         {
             _context = context;
         }
-        public IActionResult Index()
+        public IActionResult Index(string searchString, int? categoryId, string sortOrder)
         {
-            var books = _context.Books.Include(b => b.Category).ToList();
-            return View(books);
+            var books = _context.Books.Include(b => b.Category).AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(b => b.Title.Contains(searchString));
+            }
+
+            if (categoryId.HasValue)
+            {
+                books = books.Where(b => b.CategoryId == categoryId);
+            }
+            books = sortOrder switch
+            {
+                "name_desc" => books.OrderByDescending(b => b.Title),
+                "price_asc" => books.OrderBy(b => b.Price),
+                "price_desc" => books.OrderByDescending(b => b.Price),
+                "stock_asc" => books.OrderBy(b => b.Stock),
+                "stock_desc" => books.OrderByDescending(b => b.Stock),
+                _ => books.OrderBy(b => b.Title),
+            };
+            
+            ViewBag.CurrentSearch = searchString;
+            ViewBag.CurrentCategory = categoryId;
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.Categories = _context.Categories.ToList();
+
+            return View(books.ToList());
         }
 
         [HttpGet]
